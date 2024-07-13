@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import { Product } from "@/types/product";
-import { Picker } from "@react-native-picker/picker";
+import RNPickerSelect from "react-native-picker-select";
 
 const ProductListView = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -64,7 +64,7 @@ const ProductListView = () => {
           product.sizes.map((size: { name: string }) => size.name)
         )
       )
-    );
+    ).map((size) => ({ label: size, value: size }));
   }, [products]);
 
   return (
@@ -72,16 +72,13 @@ const ProductListView = () => {
       <View style={styles.filterContainer}>
         <Text style={styles.pickerLabel}>Size:</Text>
         <View style={styles.pickerContainer}>
-          <Picker
-            selectedValue={sizeFilter}
-            style={styles.picker}
-            onValueChange={(itemValue) => setSizeFilter(itemValue)}
-          >
-            <Picker.Item label="" value={undefined} />
-            {sizeItems.map((size: string) => (
-              <Picker.Item key={size} label={size} value={size} />
-            ))}
-          </Picker>
+        <RNPickerSelect
+            onValueChange={(value) => setSizeFilter(value)}
+            items={sizeItems}
+            placeholder={{ label: "Select a size", value: null }}
+            value={sizeFilter}
+            style={pickerSelectStyles}
+          />
         </View>
         {sizeFilter && (
           <TouchableOpacity onPress={resetFilters} style={styles.button}>
@@ -192,6 +189,30 @@ const styles = StyleSheet.create({
   selectedFiltersText: {
     fontSize: 14,
     color: "#555",
+  },
+});
+
+
+const pickerSelectStyles = StyleSheet.create({
+  inputIOS: {
+    fontSize: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 4,
+    color: 'black',
+    paddingRight: 30, 
+  },
+  inputAndroid: {
+    fontSize: 16,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderWidth: 0.5,
+    borderColor: 'gray',
+    borderRadius: 8,
+    color: 'black',
+    paddingRight: 30, 
   },
 });
 
